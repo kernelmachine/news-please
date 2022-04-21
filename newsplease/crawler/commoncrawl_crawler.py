@@ -23,7 +23,7 @@ __copyright__ = "Copyright 2017"
 __credits__ = ["Sebastian Nagel"]
 
 # commoncrawl.org
-__cc_base_url = 'https://commoncrawl.s3.amazonaws.com/'
+__cc_base_url = 'https://data.commoncrawl.org/'
 
 # log file of fully extracted WARC files
 __log_pathname_fully_extracted_warcs = None
@@ -114,7 +114,8 @@ def __extract_date_from_warc_filename(path):
     # Assume the filename pattern is CC-NEWS-20160911145202-00018.warc.gz
     fn = fn.replace('CC-NEWS-', '')
     dt = fn.split('-')[0]
-
+    if dt == 'warc.paths.gz':
+        return datetime.datetime.strptime("20160911145202", '%Y%m%d%H%M%S')
     return datetime.datetime.strptime(dt, '%Y%m%d%H%M%S')
 
 
@@ -160,10 +161,10 @@ def __get_remote_index(warc_files_start_date, warc_files_end_date):
             for date in warc_dates:
                 year = date.strftime('%Y')
                 month = date.strftime('%m')
-                cmd += "aws s3 ls --recursive s3://commoncrawl/crawl-data/CC-NEWS/%s/%s/ --no-sign-request >> %s && " % (year, month, temp_filename)
+                cmd += "aws s3 ls --recursive s3://commoncrawl/crawl-data/CC-NEWS/%s/%s/ >> %s && " % (year, month, temp_filename)
 
         else:
-            cmd = "aws s3 ls --recursive s3://commoncrawl/crawl-data/CC-NEWS/ --no-sign-request > %s && " % temp_filename
+            cmd = "aws s3 ls --recursive s3://commoncrawl/crawl-data/CC-NEWS/ > %s && " % temp_filename
 
         cmd += "awk %s %s " % (awk_parameter, temp_filename)
 

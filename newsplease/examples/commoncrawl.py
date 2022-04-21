@@ -33,7 +33,7 @@ import logging
 import os
 import sys
 import datetime
-from datetime import date
+from datetime import datetime, date, timedelta
 
 from ..crawler import commoncrawl_crawler as commoncrawl_crawler
 
@@ -41,25 +41,33 @@ __author__ = "Felix Hamborg"
 __copyright__ = "Copyright 2017"
 __credits__ = ["Sebastian Nagel"]
 
+today = date.today()
+today_date = datetime(today.year, today.month, today.day)
+
+end_date = today_date - timedelta(days=10)
+start_date = end_date - timedelta(days=10)
+
+
 
 ############ YOUR CONFIG ############
 # download dir for warc files
-my_local_download_dir_warc = './cc_download_warc/'
+my_local_download_dir_warc = './test_warc/'
 # download dir for articles
-my_local_download_dir_article = './cc_download_articles/'
+my_local_download_dir_article = './test_articles/'
 # hosts (if None or empty list, any host is OK)
-my_filter_valid_hosts = []  # example: ['elrancaguino.cl']
+my_filter_valid_hosts = []
+# ["news.baidu.com", "people.com.cn", "chinanews.com.cn", "cnr.cn", "cn.chinadaily.com.cn", "cnn.com", "nytimes.com", "foxnews.com", "usatoday.com", "abcnews.go.com", "news.mail.ru", "novayagazeta.ru", "ria.ru", "ntv.ru", "rbc.ru"] # example: ['elrancaguino.cl']
 # start date (if None, any date is OK as start date), as datetime
-my_filter_start_date = None  # datetime.datetime(2016, 1, 1)
+my_filter_start_date = start_date  # datetime.datetime(2016, 1, 1)
 # end date (if None, any date is OK as end date), as datetime
-my_filter_end_date = None  # datetime.datetime(2016, 12, 31)
+my_filter_end_date = end_date  # datetime.datetime(2016, 12, 31)
 # Only .warc files published within [my_warc_files_start_date, my_warc_files_end_date) will be downloaded.
 # Note that the date a warc file has been published does not imply it contains only news
 # articles from that date. Instead, you must assume that the warc file can contain articles
 # from ANY time before the warc file was published, e.g., a warc file published in August 2020
 # may contain news articles from December 2016.
-my_warc_files_start_date = None # example: datetime.datetime(2020, 3, 1)
-my_warc_files_end_date = None # example: datetime.datetime(2020, 3, 2)
+my_warc_files_start_date = start_date # example: datetime.datetime(2020, 3, 1)
+my_warc_files_end_date = end_date # example: datetime.datetime(2020, 3, 2)
 # if date filtering is strict and news-please could not detect the date of an article, the article will be discarded
 my_filter_strict_date = True
 # if True, the script checks whether a file has been downloaded already and uses that file instead of downloading
@@ -68,13 +76,13 @@ my_reuse_previously_downloaded_files = True
 # continue after error
 my_continue_after_error = True
 # show the progress of downloading the WARC files
-my_show_download_progress = False
+my_show_download_progress = True
 # log_level
 my_log_level = logging.INFO
 # json export style
 my_json_export_style = 1  # 0 (minimize), 1 (pretty)
 # number of extraction processes
-my_number_of_extraction_processes = 1
+my_number_of_extraction_processes = 3
 # if True, the WARC file will be deleted after all articles have been extracted from it
 my_delete_warc_after_extraction = True
 # if True, will continue extraction from the latest fully downloaded but not fully extracted WARC files and then
